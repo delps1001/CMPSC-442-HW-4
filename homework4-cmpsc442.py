@@ -11,6 +11,8 @@ student_name = "Type your full name here."
 # Include your imports here, if any are used.
 
 import math
+import Queue
+import copy
 
 ############################################################
 # Section 1: Sudoku
@@ -165,23 +167,41 @@ class Sudoku(object):
                             self.board[[k for k in current if list(self.board[k]).count(d) > 0][0]] = set([d])
                             print "CHANGED _________________________ TRUE"
                             changed = True
-#TESt for change
+
 
 
     def infer_with_guessing(self):
-        print "Here"
-        pass
+        queue = Queue.LifoQueue()
+        queue.put(copy.deepcopy(self))
+        while queue:
+            curr = queue.get()
+            curr.infer_improved()
+            if all([len(curr.board[k]) == 1 for k in curr.board]):
+                return curr
+            if not any([len(curr.board[k]) == 0 for k in curr.board]):
+                guesses = [i for i in curr.board if len(curr.board[i]) > 1][0]
+                for guess in curr.board[guesses]:
+                    succ = copy.deepcopy(curr)
+                    succ.board[guesses] = set([guess])
+                    queue.put(succ)
+
+
+
 
 b = read_board('hw4-hard1.txt')
 print ""
 sudoku = Sudoku(b)
-sudoku.infer_improved()
+current = sudoku.infer_with_guessing()
 count = 0
-for x in sorted(sudoku.board):
+for x in sorted(current.board):
     if count % 9 == 0:
         print ""
-    print list(sudoku.board[x])[0],
+    print list(current.board[x])[0],
     count = count + 1
+print ""
+for x in sorted(current.board):
+    print x, current.board[x]
+
 
 ############################################################
 # Section 2: Feedback
