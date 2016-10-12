@@ -2,7 +2,7 @@
 # CMPSC442: Homework 4
 ############################################################
 
-student_name = "Type your full name here."
+student_name = "Dalton DelPiano"
 
 ############################################################
 # Imports
@@ -18,6 +18,7 @@ import copy
 # Section 1: Sudoku
 ############################################################
 
+
 def sudoku_cells():
     possible_cells =[]
     for x in range(0, 9):
@@ -25,53 +26,9 @@ def sudoku_cells():
             possible_cells.append((tuple([x, y])))
     return possible_cells
 
+
 def sudoku_arcs(regions):
-
-    # First do all arcs that are in the same row or column (easy)
     arcs = []
-    # same row
-    """
-    for z in range(0, 9):
-        for x in range(0, 9):
-            for y in range(x + 1, 9):
-                arcs.append(tuple([tuple([z, x]), tuple([z, y])]))
-            # left upper corner
-            if (x == 0 and (z == 0 or z == 3 or z == 6)) or (x == 3 and (z == 0 or z == 3 or z == 6)) or (x == 6 and (z == 0 or z == 3 or z == 6)):
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x + 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 2, x + 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x + 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 2, x + 1])]))
-            # right upper corner
-            if (x == 2 and (z == 0 or z == 3 or z == 6)) or (x == 5 and (z == 0 or z == 3 or z == 6)) or (x == 8 and (z == 0 or z == 3 or z == 6)):
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x - 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 2, x - 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x - 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 2, x - 1])]))
-            # left lower corner
-            if (x == 0 and (z == 2 or z == 5 or z == 8)) or (x == 3 and (z == 2 or z == 5 or z == 8)) or (x == 6 and (z == 2 or z == 5 or z == 8)):
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x + 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 2, x + 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x + 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 2, x + 1])]))
-            # lower right corner
-            if (x == 2 and (z == 2 or z == 5 or z == 8)) or (x == 5 and (z == 2 or z == 5 or z == 8)) or (x == 8 and (z == 2 or z == 5 or z == 8)):
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x - 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 2, x - 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x - 2])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 2, x - 1])]))
-            # center
-            if (x == 1 and (z == 1 or z == 4 or z == 7)) or (x == 4 and (z == 1 or z == 4 or z == 7)) or (x == 7 and (z == 1 or z == 4 or z == 7)):
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x - 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x - 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z - 1, x + 1])]))
-                arcs.append(tuple([tuple([z, x]), tuple([z + 1, x + 1])]))
-
-    # same column
-    for z in range(0, 9):
-        for x in range(0, 9):
-            for y in range(x + 1, 9):
-                arcs.append(tuple([tuple([x, z]), tuple([y, z])]))
-                arcs.append(tuple([tuple([y, z]), tuple([x, z])]))"""
     for x in range(9):
         for y in range(9):
             for r in range(9):
@@ -84,18 +41,17 @@ def sudoku_arcs(regions):
                     arcs.append(((x, y), (x, c)))
                     if (x, c) not in regions[1][c]:
                         regions[1][c].append((x, c))
-            sr = int(math.floor(x/3) * 3)
-            sc = int(math.floor(y/3) * 3)
+            sqr = int(math.floor(x/3) * 3)
+            sqc = int(math.floor(y/3) * 3)
 
             for r in range(3):
                 for c in range(3):
-                    if (sr+r, sc+c) != (x, y):
-                        arcs.append(((x, y), (sr+r, sc+c)))
-                        if (sr+r, sc+c) not in regions[2][sr + (sc/3)]:
-                            regions[2][sr + (sc/3)].append((sr+r, sc+c))
-
-
+                    if (sqr+r, sqc+c) != (x, y):
+                        arcs.append(((x, y), (sqr+r, sqc+c)))
+                        if (sqr+r, sqc+c) not in regions[2][sqr + (sqc/3)]:
+                            regions[2][sqr + (sqc/3)].append((sqr+r, sqc+c))
     return arcs
+
 
 def read_board(path):
     file_object = open(path, 'r')
@@ -116,9 +72,6 @@ class Sudoku(object):
     REGIONS = [[[] for x in range(9)]for y in range(3)]
     CELLS = sudoku_cells()
     ARCS = sudoku_arcs(REGIONS)
-    print len(REGIONS[2][0])
-    for x in sorted(REGIONS[1][1]):
-        print x,
 
     def __init__(self, board):
         self.board = board
@@ -156,19 +109,13 @@ class Sudoku(object):
                 for r_c_b in range(len(self.REGIONS[r])):
                     domain = range(0, 9)
                     current = self.REGIONS[r][r_c_b]
-                    print r, r_c_b
                     for i in current:
                         if len(self.board[i]) == 1 and list(self.board[i])[0] in domain:
-                            print i, self.board[i]
-                            print "REMOVING :" + str(list(self.board[i])[0])
                             domain.remove(list(self.board[i])[0])
                     for d in domain:
                         if sum(list(self.board[k]).count(d) for k in current) == 1:
                             self.board[[k for k in current if list(self.board[k]).count(d) > 0][0]] = set([d])
-                            print "CHANGED _________________________ TRUE"
                             changed = True
-
-
 
     def infer_with_guessing(self):
         queue = Queue.LifoQueue()
@@ -185,22 +132,19 @@ class Sudoku(object):
                     succ.board[guesses] = set([guess])
                     queue.put(succ)
 
-
-
-
-b = read_board('hw4-hard1.txt')
-print ""
-sudoku = Sudoku(b)
-current = sudoku.infer_with_guessing()
-count = 0
-for x in sorted(current.board):
-    if count % 9 == 0:
-        print ""
-    print list(current.board[x])[0],
-    count = count + 1
-print ""
-for x in sorted(current.board):
-    print x, current.board[x]
+# b = read_board('hw4-easy.txt')
+# print ""
+# sudoku = Sudoku(b)
+# sudoku = sudoku.infer_with_guessing()
+# count = 0
+# for x in sorted(sudoku.board):
+#     if count % 9 == 0:
+#         print ""
+#     print list(sudoku.board[x])[0],
+#     count = count + 1
+# print ""
+# for x in sorted(sudoku.board):
+#     print x, sudoku.board[x]
 
 
 ############################################################
