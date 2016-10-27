@@ -27,7 +27,7 @@ def sudoku_cells():
     return possible_cells
 
 
-def sudoku_arcs(regions):
+def sudoku_arcs(regions = [[[] for x in range(9)]for y in range(3)]):
     arcs = []
     for x in range(9):
         for y in range(9):
@@ -124,7 +124,8 @@ class Sudoku(object):
             curr = queue.get()
             curr.infer_improved()
             if all([len(curr.board[k]) == 1 for k in curr.board]):
-                return curr
+                self.board = curr.board
+                return
             if not any([len(curr.board[k]) == 0 for k in curr.board]):
                 guesses = [i for i in curr.board if len(curr.board[i]) > 1][0]
                 for guess in curr.board[guesses]:
@@ -132,10 +133,10 @@ class Sudoku(object):
                     succ.board[guesses] = set([guess])
                     queue.put(succ)
 
-# b = read_board('hw4-easy.txt')
+# b = read_board('hw4-hard2.txt')
 # print ""
 # sudoku = Sudoku(b)
-# sudoku = sudoku.infer_with_guessing()
+# sudoku.infer_with_guessing()
 # count = 0
 # for x in sorted(sudoku.board):
 #     if count % 9 == 0:
@@ -152,19 +153,17 @@ class Sudoku(object):
 ############################################################
 
 feedback_question_1 = """
-Type your response here.
-Your response may span multiple lines.
-Do not include these instructions in your response.
+I spent around 10 hours on this assignment.
 """
 
 feedback_question_2 = """
-Type your response here.
-Your response may span multiple lines.
-Do not include these instructions in your response.
+The aspects of this assignment I found most challenging were deciphering what the prompt
+actually wanted us to do. Sometimes it was a bit vague in what it wanted us to implement
+so it took a lot of trial and error to understand what I needed to do.
 """
 
 feedback_question_3 = """
-Type your response here.
-Your response may span multiple lines.
-Do not include these instructions in your response.
+I liked this assignment overall, it was pretty enjoyable to create a sudoku solver
+and there isn't a whole lot I would change besides maybe being a little more specfic
+in the infer_improved part of the prompt.
 """
